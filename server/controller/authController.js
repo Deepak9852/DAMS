@@ -40,19 +40,15 @@ async function UserRegister(req, res) {
 }
 
 async function UserLogin(req, res) {
-  const {email} = req.body;
+  const { email } = req.body;
   try {
-    const user = await registerUserModel.findOne({email}).select("+password");
+    const user = await registerUserModel.findOne({ email }).select("+password");
     if (!user)
       return res.status(401).json({
         status: "failed",
         data: [],
-        message:
-          "invailid email or password. Please try again with correct credential",
+        message: "invalid email or password. Please try again with correct credential",
       });
-
-    // if user exist
-    // validate password
 
     const isPasswordValid = await bcrypt.compare(
       `${req.body.password}`,
@@ -63,42 +59,37 @@ async function UserLogin(req, res) {
       return res.status(401).json({
         status: "failed",
         data: [],
-        message:
-          "invalid email or password. Please try again with the correct credential",
+        message: "invalid email or password. Please try again with correct credential",
       });
 
-
-      let options = {
-        maxAge: 20*60*1000,
-        httpOnly: true,
-        secure:true,
-        samesite : "None"
-      }
-
-
-    
+    let options = {
+      maxAge: 20 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "None"
+    }
 
     const { password, ...user_data } = user._doc;
     const accessToken = user.generateAccessJWT();
+    
+    // Set both cookie and send token in response
     res.cookie("SessionID", accessToken, options);
-    // localStorage.setItem('token', accessToken);
     res.status(200).json({
       status: "success",
-      accessToken,
+      accessToken, // Include token in response
       data: [user_data],
-      message: "You have successFully logged in",
+      message: "You have successfully logged in",
     });
-
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({
       status: "error",
       code: 500,
       data: [],
       message: "Internal login server Error",
     });
-  };
-  res.end();
-};
+  }
+}
 
 async function UserLogout(req, res) {
   try {
