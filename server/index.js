@@ -14,10 +14,11 @@ app.use(express.urlencoded({extended:false}));
 
 
 app.use(cors({
-  origin: "http://localhost:3000", // Allow only frontend origin
-  credentials: true, //  Allow cookies
-  methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type,Authorization",
+  origin: ["http://localhost:3000", "http://localhost:3001"], // Allow both frontend origins
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ["Set-Cookie"]
 }));
 app.use(express.json());
 

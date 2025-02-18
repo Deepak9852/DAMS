@@ -7,25 +7,41 @@ const {SECRET_ACCESS_TOKEN} = require('../config')
 
 async function Verify(req, res, next){
     try {
-        const authHeader = req.headers["cookie"];
-        if(!authHeader) return res.sendStatus(401);
-        const cookie = authHeader.split("=")[1];
-        const accessToken = cookie.split(";")[0];
-        console.log(accessToken);
-        const checkIfBlackListed = await blackListModel.findOne({token:accessToken});
+        // Check for Authorization header first
+        const authHeader = req.headers["authorization"];
+        let token;
+        
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            // Extract token from Authorization header
+            token = authHeader.split(' ')[1];
+        } else {
+            // Fall back to cookie if no Authorization header
+            const cookieHeader = req.headers["cookie"];
+            if (!cookieHeader) return res.sendStatus(401);
+            const cookie = cookieHeader.split("=")[1];
+            token = cookie.split(";")[0];
+        }
+
+        if (!token) return res.sendStatus(401);
+
+        const checkIfBlackListed = await blackListModel.findOne({token:token});
         if(checkIfBlackListed)
             return res.status(401).json({message: "This session has expired . Please log In"});
-        jwt.verify(cookie, SECRET_ACCESS_TOKEN, async(err, decoded) =>{
+        jwt.verify(token, SECRET_ACCESS_TOKEN, async(err, decoded) =>{
             if(err){
                 return res.status(401).json({message: "This session has expired. Please login"})
             }
             const {id} = decoded;        
             const user = await registerUserModel.findById(id);
+            if (!user) {
+                return res.status(401).json({ message: "User not found" });
+            }
             const {password, ...data} = user._doc;
             req.user = data;
             next();
         });
     } catch (err) {
+        console.error('Verify middleware error:', err);
         res.status(500).json({
             status:"error",
             code:500,
