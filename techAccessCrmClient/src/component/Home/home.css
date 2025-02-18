@@ -1,0 +1,10 @@
+.outerBox{
+    position: relative;
+    background-image: url(https://i.ibb.co/XZBCnJLd/college-Img.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:rgb(11, 2, 37); ;
+    height: 87vh;
+
+}

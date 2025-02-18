@@ -1,0 +1,9 @@
+#footerBox{
+  background-color: rgb(11, 2, 37);
+  color: azure;
+  
+}
+
+.list-unstyled>li>a{
+  text-decoration: none;
+}

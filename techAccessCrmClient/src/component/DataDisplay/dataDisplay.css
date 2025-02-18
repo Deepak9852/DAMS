@@ -1,0 +1,35 @@
+.dataBox{
+    position: relative;
+    background-color: white;
+    background-image: url(https://i.ibb.co/XZBCnJLd/college-Img.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:rgba(11, 2, 37,1); ;
+    height: 87vh;
+    /* width: 90vh;   */
+    padding: 7vw;
+}
+
+.dataTable{
+    height: 50vh;
+    width: 60vw;   
+}
+
+.dataTable>table tr td{
+    border: 2px solid black;
+}
+
+.dataTable>table{
+    border-collapse: collapse;
+    background-color: rgba(11, 2, 37,0.9);
+}
+
+.dataTable>table>tr>td{
+    height: 9.5vh;
+    width: 30vw;
+    min-width: 150px;
+    color: white;
+    text-align: center;
+    font-size: large;
+}
